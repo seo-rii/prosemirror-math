@@ -4,29 +4,29 @@
  *--------------------------------------------------------*/
 
 // prosemirror imports
-import { Node as ProseNode } from "prosemirror-model";
-import { EditorState, Transaction, TextSelection, NodeSelection, PluginKey } from "prosemirror-state";
-import { NodeView, EditorView, Decoration } from "prosemirror-view";
-import { StepMap } from "prosemirror-transform";
-import { keymap } from "prosemirror-keymap";
-import { undo, redo } from "prosemirror-history";
-import { newlineInCode, chainCommands, deleteSelection, liftEmptyBlock, Command } from "prosemirror-commands";
+import {Node as ProseNode} from "prosemirror-model";
+import {EditorState, Transaction, TextSelection, PluginKey} from "prosemirror-state";
+import {NodeView, EditorView, Decoration} from "prosemirror-view";
+import {StepMap} from "prosemirror-transform";
+import {keymap} from "prosemirror-keymap";
+import {undo, redo} from "prosemirror-history";
+import {newlineInCode, chainCommands, deleteSelection} from "prosemirror-commands";
 
 // katex
-import katex, { ParseError, KatexOptions } from "katex";
-import { nudgeCursorBackCmd, nudgeCursorForwardCmd } from "./commands/move-cursor-cmd";
-import { collapseMathCmd } from "./commands/collapse-math-cmd";
-import { IMathPluginState } from "./math-plugin";
+import {render, KatexOptions} from "katex";
+import {collapseMathCmd} from "./commands/collapse-math-cmd";
+import {IMathPluginState} from "./math-plugin";
 
 // preview
 
-import { PreviewPlugin } from "./preview-plugin.js"
+import {PreviewPlugin} from "./preview-plugin.js"
 
 //// INLINE MATH NODEVIEW //////////////////////////////////
 
 export interface ICursorPosObserver {
 	/** indicates on which side cursor should appear when this node is selected */
 	cursorSide: "start" | "end";
+
 	/**  */
 	updateCursorPos(state: EditorState): void;
 }
@@ -35,7 +35,7 @@ interface IMathViewOptions {
 	/** Dom element name to use for this NodeView */
 	tagName?: string;
 	/** Whether to render this node as display or inline math. */
-	katexOptions?:KatexOptions;
+	katexOptions?: KatexOptions;
 }
 
 export class MathView implements NodeView, ICursorPosObserver {
@@ -62,9 +62,9 @@ export class MathView implements NodeView, ICursorPosObserver {
 	// == Lifecycle ===================================== //
 
 	/**
-	 * @param onDestroy Callback for when this NodeView is destroyed.  
+	 * @param onDestroy Callback for when this NodeView is destroyed.
 	 *     This NodeView should unregister itself from the list of ICursorPosObservers.
-	 * 
+	 *
 	 * Math Views support the following options:
 	 * @option displayMode If TRUE, will render math in display mode, otherwise in inline mode.
 	 * @option tagName HTML tag name to use for this NodeView.  If none is provided,
@@ -72,9 +72,9 @@ export class MathView implements NodeView, ICursorPosObserver {
 	 */
 	constructor(
 		node: ProseNode,
-		view: EditorView, 
-		getPos: (() => number), 
-		options: IMathViewOptions = {}, 
+		view: EditorView,
+		getPos: (() => number),
+		options: IMathViewOptions = {},
 		mathPluginKey: PluginKey<IMathPluginState>,
 		onDestroy?: (() => void)
 	) {
@@ -90,7 +90,7 @@ export class MathView implements NodeView, ICursorPosObserver {
 		this._isEditing = false;
 
 		// options
-		this._katexOptions = Object.assign({ globalGroup: true, throwOnError: false }, options.katexOptions);
+		this._katexOptions = Object.assign({globalGroup: true, throwOnError: false}, options.katexOptions);
 		this._tagName = options.tagName || this._node.type.name.replace("_", "-");
 
 		// create dom representation of nodeview
@@ -127,7 +127,7 @@ export class MathView implements NodeView, ICursorPosObserver {
 			this._mathSrcElt.remove();
 			delete this._mathSrcElt;
 		}
-		
+
 		this.dom.remove();
 	}
 
@@ -143,7 +143,7 @@ export class MathView implements NodeView, ICursorPosObserver {
 
 	// == Updates ======================================= //
 
-	update(node: ProseNode, decorations: Decoration[]) {
+	update(node: ProseNode, decorations: readonly Decoration[]) {
 		if (!node.sameMarkup(this._node)) return false
 		this._node = node;
 
@@ -154,9 +154,12 @@ export class MathView implements NodeView, ICursorPosObserver {
 			if (start != null) {
 				let diff = node.content.findDiffEnd(state.doc.content as any);
 				if (diff) {
-					let { a: endA, b: endB } = diff;
+					let {a: endA, b: endB} = diff;
 					let overlap = start - Math.min(endA, endB)
-					if (overlap > 0) { endA += overlap; endB += overlap }
+					if (overlap > 0) {
+						endA += overlap;
+						endB += overlap
+					}
 					this._innerView.dispatch(
 						state.tr
 							.replace(start, endB, node.slice(start, endA))
@@ -187,14 +190,20 @@ export class MathView implements NodeView, ICursorPosObserver {
 	// == Events ===================================== //
 
 	selectNode() {
-		if (!this._outerView.editable) { return; }
+		if (!this._outerView.editable) {
+			return;
+		}
 		this.dom.classList.add("ProseMirror-selectednode");
-		if (!this._isEditing) { this.openEditor(); }
+		if (!this._isEditing) {
+			this.openEditor();
+		}
 	}
 
 	deselectNode() {
 		this.dom.classList.remove("ProseMirror-selectednode");
-		if (this._isEditing) { this.closeEditor(); }
+		if (this._isEditing) {
+			this.closeEditor();
+		}
 	}
 
 	stopEvent(event: Event): boolean {
@@ -203,12 +212,16 @@ export class MathView implements NodeView, ICursorPosObserver {
 			&& this._innerView.dom.contains(event.target as Node);
 	}
 
-	ignoreMutation() { return true; }
+	ignoreMutation() {
+		return true;
+	}
 
 	// == Rendering ===================================== //
 
 	renderMath() {
-		if (!this._mathRenderElt) { return; }
+		if (!this._mathRenderElt) {
+			return;
+		}
 
 		// get tex string to render
 		let content = this._node.content.content;
@@ -221,7 +234,9 @@ export class MathView implements NodeView, ICursorPosObserver {
 		if (texString.length < 1) {
 			this.dom.classList.add("empty-math");
 			// clear rendered math, since this node is in an invalid state
-			while(this._mathRenderElt.firstChild){ this._mathRenderElt.firstChild.remove(); }
+			while (this._mathRenderElt.firstChild) {
+				this._mathRenderElt.firstChild.remove();
+			}
 			// do not render empty math
 			return;
 		} else {
@@ -230,7 +245,7 @@ export class MathView implements NodeView, ICursorPosObserver {
 
 		// render katex, but fail gracefully
 		try {
-			katex.render(texString, this._mathRenderElt, this._katexOptions);
+			render(texString, this._mathRenderElt, this._katexOptions);
 			this._mathRenderElt.classList.remove("parse-error");
 			this.dom.setAttribute("title", "");
 		} catch (err) {
@@ -243,8 +258,10 @@ export class MathView implements NodeView, ICursorPosObserver {
 	// == Inner Editor ================================== //
 
 	dispatchInner(tr: Transaction) {
-		if (!this._innerView) { return; }
-		let { state, transactions } = this._innerView.state.applyTransaction(tr)
+		if (!this._innerView) {
+			return;
+		}
+		let {state, transactions} = this._innerView.state.applyTransaction(tr)
 		this._innerView.updateState(state)
 
 		if (!tr.getMeta("fromOutside")) {
@@ -253,7 +270,9 @@ export class MathView implements NodeView, ICursorPosObserver {
 				let steps = transactions[i].steps
 				for (let j = 0; j < steps.length; j++) {
 					let mapped = steps[j].map(offsetMap);
-					if (!mapped) { throw Error("step discarded!"); }
+					if (!mapped) {
+						throw Error("step discarded!");
+					}
 					outerTr.step(mapped)
 				}
 			}
@@ -262,10 +281,12 @@ export class MathView implements NodeView, ICursorPosObserver {
 	}
 
 	openEditor() {
-		if (this._innerView) { throw Error("inner view should not exist!"); }
+		if (this._innerView) {
+			throw Error("inner view should not exist!");
+		}
 
 		// create a nested ProseMirror view
-		this._innerView = new EditorView(this._mathSrcElt, {
+		this._innerView = new EditorView(this._mathSrcElt!, {
 			state: EditorState.create({
 				doc: this._node,
 				plugins: [keymap({
@@ -273,38 +294,44 @@ export class MathView implements NodeView, ICursorPosObserver {
 						undo(
 							this._outerView.state,
 							this._outerView.dispatch
-					),
+						),
 					"Mod-y": () =>
 						redo(
 							this._outerView.state,
 							this._outerView.dispatch
-					),
+						),
 					"Tab": (state, dispatch) => {
-						if(dispatch){ dispatch(state.tr.insertText("\t")); }
+						if (dispatch) {
+							dispatch(state.tr.insertText("\t"));
+						}
 						return true;
 					},
 					"Backspace": chainCommands(deleteSelection, (state, dispatch, tr_inner) => {
 						// default backspace behavior for non-empty selections
-						if(!state.selection.empty) { return false; }
+						if (!state.selection.empty) {
+							return false;
+						}
 						// default backspace behavior when math node is non-empty
-						if(this._node.textContent.length > 0){ return false; }
+						if (this._node.textContent.length > 0) {
+							return false;
+						}
 						// otherwise, we want to delete the empty math node and focus the outer view
 						this._outerView.dispatch(this._outerView.state.tr.insertText(""));
 						this._outerView.focus();
 						return true;
 					}),
-					"Ctrl-Backspace" : (state, dispatch, tr_inner) => {
+					"Ctrl-Backspace": (state, dispatch, tr_inner) => {
 						// delete math node and focus the outer view
 						this._outerView.dispatch(this._outerView.state.tr.insertText(""));
 						this._outerView.focus();
 						return true;
 					},
 					"Enter": chainCommands(newlineInCode, collapseMathCmd(this._outerView, +1, false)),
-					"Ctrl-Enter" : collapseMathCmd(this._outerView, +1, false),
-					"ArrowLeft"  : collapseMathCmd(this._outerView, -1, true),
-					"ArrowRight" : collapseMathCmd(this._outerView, +1, true),
-					"ArrowUp"    : collapseMathCmd(this._outerView, -1, true),
-					"ArrowDown"  : collapseMathCmd(this._outerView, +1, true),
+					"Ctrl-Enter": collapseMathCmd(this._outerView, +1, false),
+					"ArrowLeft": collapseMathCmd(this._outerView, -1, true),
+					"ArrowRight": collapseMathCmd(this._outerView, +1, true),
+					"ArrowUp": collapseMathCmd(this._outerView, -1, true),
+					"ArrowDown": collapseMathCmd(this._outerView, +1, true),
 				}), PreviewPlugin]
 			}),
 			dispatchTransaction: this.dispatchInner.bind(this)
@@ -316,11 +343,11 @@ export class MathView implements NodeView, ICursorPosObserver {
 
 		// request outer cursor position before math node was selected
 		let maybePos = this._mathPluginKey.getState(this._outerView.state)?.prevCursorPos;
-		if(maybePos === null || maybePos === undefined) {
+		if (maybePos === null || maybePos === undefined) {
 			console.error("[prosemirror-math] Error:  Unable to fetch math plugin state from key.");
 		}
 		let prevCursorPos: number = maybePos ?? 0;
-		
+
 		// compute position that cursor should appear within the expanded math node
 		let innerPos = (prevCursorPos <= this._getPos()) ? 0 : this._node.nodeSize - 2;
 		this._innerView.dispatch(
@@ -334,7 +361,7 @@ export class MathView implements NodeView, ICursorPosObserver {
 
 	/**
 	 * Called when the inner ProseMirror editor should close.
-	 * 
+	 *
 	 * @param render Optionally update the rendered math after closing. (which
 	 *    is generally what we want to do, since the user is done editing!)
 	 */
@@ -344,7 +371,9 @@ export class MathView implements NodeView, ICursorPosObserver {
 			this._innerView = undefined;
 		}
 
-		if (render) { this.renderMath(); }
+		if (render) {
+			this.renderMath();
+		}
 		this._isEditing = false;
 	}
 }

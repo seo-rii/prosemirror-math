@@ -4,9 +4,15 @@
  *--------------------------------------------------------*/
 
 // prosemirror imports
-import { EditorState, Transaction, Selection as ProseSelection, Plugin as ProsePlugin } from "prosemirror-state";
-import { DecorationSet, Decoration } from "prosemirror-view";
-import { Fragment, Node as ProseNode } from "prosemirror-model";
+import {
+    EditorState,
+    Transaction,
+    Selection as ProseSelection,
+    Plugin as ProsePlugin,
+    EditorStateConfig
+} from "prosemirror-state";
+import {DecorationSet, Decoration} from "prosemirror-view";
+import {Fragment, Node as ProseNode} from "prosemirror-model";
 
 ////////////////////////////////////////////////////////////
 
@@ -16,27 +22,35 @@ import { Fragment, Node as ProseNode } from "prosemirror-model";
  * @param arg Should be either a Transaction or an EditorState,
  *     although any object with `selection` and `doc` will work.
  */
-const checkSelection = (arg:{ selection:ProseSelection, doc:ProseNode }) => {
-	let { from, to } = arg.selection;
-	let content: Fragment = arg.selection.content().content;
+const checkSelection = (arg: {
+    selection: ProseSelection,
+    doc: ProseNode
+}) => {
+    let {from, to} = arg.selection;
+    let content: Fragment = arg.selection.content().content;
 
-	let result: { start: number, end: number }[] = [];
+    let result: {
+        start: number,
+        end: number
+    }[] = [];
 
-	content.descendants((node: ProseNode, pos: number, parent: ProseNode) => {
-		if (node.type.name == "text") { return false; }
-		if (node.type.name.startsWith("math_")) {
-			result.push({
-				start: Math.max(from + pos - 1, 0),
-				end: from + pos + node.nodeSize - 1
-			})
-			return false;
-		}
-		return true;
-	});
+    content.descendants((node: ProseNode, pos: number, parent: ProseNode | null) => {
+        if (node.type.name == "text") {
+            return false;
+        }
+        if (node.type.name.startsWith("math_")) {
+            result.push({
+                start: Math.max(from + pos - 1, 0),
+                end: from + pos + node.nodeSize - 1
+            })
+            return false;
+        }
+        return true;
+    });
 
-	return DecorationSet.create(arg.doc, result.map(
-		({start, end}) => Decoration.node(start, end, { class: "math-select" })
-	))
+    return DecorationSet.create(arg.doc, result.map(
+        ({start, end}) => Decoration.node(start, end, {class: "math-select"})
+    ))
 }
 
 /**
@@ -44,23 +58,27 @@ const checkSelection = (arg:{ selection:ProseSelection, doc:ProseNode }) => {
  * math will put a box around each individual character of a
  * math expression.  This plugin attempts to make math selections
  * slightly prettier by instead setting a background color on the node.
- * 
+ *
  * (remember to use the included math.css!)
- * 
+ *
  * @todo (6/13/20) math selection rectangles are not quite even with text
  */
-export const mathSelectPlugin: ProsePlugin = new ProsePlugin({
-	state: {
-		init(config: Object, partialState: EditorState) {
-			return checkSelection(partialState);
-		},
-		apply(tr:Transaction, oldState: EditorState) {
-			if (!tr.selection || !tr.selectionSet) { return oldState; }
-			let sel = checkSelection(tr);
-			return sel;
-		}
-	},
-	props: {
-		decorations: (state:EditorState) => { return mathSelectPlugin.getState(state); },
-	}
+export const mathSelectPlugin: ProsePlugin = new ProsePlugin<DecorationSet>({
+    state: {
+        init(config: EditorStateConfig, partialState: EditorState) {
+            return checkSelection(partialState);
+        },
+        apply(tr: Transaction, oldState: DecorationSet) {
+            if (!tr.selection || !tr.selectionSet) {
+                return oldState;
+            }
+            let sel = checkSelection(tr);
+            return sel;
+        }
+    },
+    props: {
+        decorations: (state: EditorState) => {
+            return mathSelectPlugin.getState(state);
+        },
+    }
 });
