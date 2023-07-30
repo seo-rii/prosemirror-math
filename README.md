@@ -1,3 +1,5 @@
+@ Modified: Box to preview the current equation being typed.
+
 # `prosemirror-math`
 
 [![](https://img.shields.io/npm/v/@benrbray/prosemirror-math?style=flat-square)](https://www.npmjs.com/package/@benrbray/prosemirror-math)

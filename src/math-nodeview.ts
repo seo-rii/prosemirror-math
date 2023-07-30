@@ -17,6 +17,10 @@ import { nudgeCursorBackCmd, nudgeCursorForwardCmd } from "./commands/move-curso
 import { collapseMathCmd } from "./commands/collapse-math-cmd";
 import { IMathPluginState } from "./math-plugin";
 
+// preview
+
+import { PreviewPlugin } from "./preview-plugin.js"
+
 //// INLINE MATH NODEVIEW //////////////////////////////////
 
 export interface ICursorPosObserver {
@@ -293,7 +297,7 @@ export class MathView implements NodeView, ICursorPosObserver {
 					"ArrowRight" : collapseMathCmd(this._outerView, +1, true),
 					"ArrowUp"    : collapseMathCmd(this._outerView, -1, true),
 					"ArrowDown"  : collapseMathCmd(this._outerView, +1, true),
-				})]
+				}), PreviewPlugin]
 			}),
 			dispatchTransaction: this.dispatchInner.bind(this)
 		})
