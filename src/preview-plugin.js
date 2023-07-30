@@ -27,7 +27,7 @@ export class PreviewTooltip {
         }
 
         // Hide the tooltip if the selection is empty
-        if (texString.length == 0) {
+        if (texString.length === 0) {
             this.tooltip.style.display = "none"
             return
         }
@@ -38,13 +38,13 @@ export class PreviewTooltip {
         //    let start = view.coordsAtPos(from), end = view.coordsAtPos(to)
         let box = this.tooltip.offsetParent.getBoundingClientRect()
         this.tooltip.style.left = equation.coordsAtPos(0).left + "px" //start.left + "px"
-        this.tooltip.style.bottom = (box.bottom - start.top) + "px"
+        this.tooltip.style.bottom = (box.bottom - equation.coordsAtPos(0).top) + "px"
 
         try {
             render(texString, this.tooltip, Object.assign({
                 globalGroup: true,
                 throwOnError: false
-            }, options.katexOptions));
+            }, {}));
         } catch (err) {
             this.tooltip.textContent = "ERROR"
         }
