@@ -295,6 +295,11 @@ export class MathView implements NodeView, ICursorPosObserver {
 							this._outerView.state,
 							this._outerView.dispatch
 						),
+					"Mod-Shift-z": () =>
+						redo(
+							this._outerView.state,
+							this._outerView.dispatch
+						),
 					"Mod-y": () =>
 						redo(
 							this._outerView.state,

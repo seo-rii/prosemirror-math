@@ -8,7 +8,7 @@ import {render, KatexOptions} from "katex";
 export class PreviewTooltip {
     constructor(equation) {
         this.tooltip = document.createElement("div")
-        this.tooltip.className = "tooltip"
+        this.tooltip.className = "prosemirror-math-tooltip"
         equation.dom.parentNode.appendChild(this.tooltip)
 
         this.update(equation, null)
@@ -26,19 +26,19 @@ export class PreviewTooltip {
             texString = content[0].textContent.trim();
         }
 
-        // Hide the tooltip if the selection is empty
         if (texString.length === 0) {
             this.tooltip.style.display = "none"
             return
         }
 
-        // Otherwise, reposition it and update its content
-        this.tooltip.style.display = ""
-        //    let {from, to} = state.selection
-        //    let start = view.coordsAtPos(from), end = view.coordsAtPos(to)
-        let box = this.tooltip.offsetParent.getBoundingClientRect()
-        this.tooltip.style.left = equation.coordsAtPos(0).left + "px" //start.left + "px"
-        this.tooltip.style.bottom = (box.bottom - equation.coordsAtPos(0).top) + "px"
+        try {
+            this.tooltip.style.display = ""
+            let box = this.tooltip.offsetParent?.getBoundingClientRect?.() || {left: 0, top: 0}
+            this.tooltip.style.right = (box.left - equation.coordsAtPos(0).left) + "px"
+            this.tooltip.style.top = (box.top - equation.coordsAtPos(0).bottom + 2) + "px"
+        } catch (e) {
+            return
+        }
 
         try {
             render(texString, this.tooltip, Object.assign({
