@@ -3,19 +3,31 @@
  *  License: MIT (see LICENSE in project root for details)
  *--------------------------------------------------------*/
 
-import { 
+import {
 	createMathSchema, mathPlugin, mathSerializer,
 	makeBlockMathInputRule, makeInlineMathInputRule,
 	REGEX_INLINE_MATH_DOLLARS, REGEX_BLOCK_MATH_DOLLARS, mathBackspaceCmd, insertMathCmd
-} from "@benrbray/prosemirror-math";
+	//@ts-ignore
+} from "@seorii/prosemirror-math";
 
 // ProseMirror imports
-import { DOMParser, Slice } from "prosemirror-model";
-import { EditorView } from "prosemirror-view";
-import { EditorState, Transaction, Plugin as ProsePlugin, NodeSelection, type Command } from "prosemirror-state";
-import { chainCommands, newlineInCode, createParagraphNear, liftEmptyBlock, splitBlock, deleteSelection, joinForward, selectNodeForward, selectNodeBackward, joinBackward } from "prosemirror-commands";
-import { keymap } from "prosemirror-keymap";
-import { inputRules } from "prosemirror-inputrules";
+import {DOMParser, Slice} from "prosemirror-model";
+import {EditorView} from "prosemirror-view";
+import {EditorState, Transaction, Plugin as ProsePlugin, NodeSelection, type Command} from "prosemirror-state";
+import {
+	chainCommands,
+	newlineInCode,
+	createParagraphNear,
+	liftEmptyBlock,
+	splitBlock,
+	deleteSelection,
+	joinForward,
+	selectNodeForward,
+	selectNodeBackward,
+	joinBackward
+} from "prosemirror-commands";
+import {keymap} from "prosemirror-keymap";
+import {inputRules} from "prosemirror-inputrules";
 
 ////////////////////////////////////////////////////////////
 
@@ -34,7 +46,7 @@ import { inputRules } from "prosemirror-inputrules";
  */
 
 // library css
-import "@benrbray/prosemirror-math/style/math.css";
+import "@seorii/prosemirror-math/style.css";
 import "prosemirror-view/style/prosemirror.css";
 import "katex/dist/katex.min.css";
 import "prosemirror-gapcursor/style/gapcursor.css";
@@ -44,7 +56,7 @@ import "./index.css";
 
 ////////////////////////////////////////////////////////////
 
-window.onload = function(){
+window.onload = function () {
 	initEditor();
 }
 
@@ -61,24 +73,26 @@ let blockMathInputRule = makeBlockMathInputRule(REGEX_BLOCK_MATH_DOLLARS, editor
 
 //// EDITOR SETUP //////////////////////////////////////////
 
-function initEditor(){
+function initEditor() {
 	// get editor element
 	let editorElt = document.getElementById("editor");
-	if(!editorElt){ throw Error("missing #editor element"); }
+	if (!editorElt) {
+		throw Error("missing #editor element");
+	}
 
 	// plugins
-	let plugins:ProsePlugin[] = [
+	let plugins: ProsePlugin[] = [
 		mathPlugin,
 		// mathSelectPlugin, // as of (03/27/20), the selection plugin is not ready for serious use
 		keymap({
-			"Mod-Space" : insertMathCmd(editorSchema.nodes.math_inline),
+			"Mod-Space": insertMathCmd(editorSchema.nodes.math_inline),
 			"Backspace": chainCommands(deleteSelection, mathBackspaceCmd, joinBackward, selectNodeBackward),
 			// below is the default keymap
-			"Enter" : chainCommands(newlineInCode, createParagraphNear, liftEmptyBlock, splitBlock),
+			"Enter": chainCommands(newlineInCode, createParagraphNear, liftEmptyBlock, splitBlock),
 			"Ctrl-Enter": chainCommands(newlineInCode, createParagraphNear, splitBlock),
 			"Delete": chainCommands(deleteSelection, joinForward, selectNodeForward)
 		}),
-		inputRules({ rules: [ inlineMathInputRule, blockMathInputRule ] })
+		inputRules({rules: [inlineMathInputRule, blockMathInputRule]})
 	];
 
 	// create ProseMirror state
@@ -89,9 +103,11 @@ function initEditor(){
 	})
 
 	// create ProseMirror view
-	let view = new EditorView(editorElt, { 
+	let view = new EditorView(editorElt, {
 		state,
-		clipboardTextSerializer: (slice) => { return mathSerializer.serializeSlice(slice) }
+		clipboardTextSerializer: (slice) => {
+			return mathSerializer.serializeSlice(slice)
+		}
 	});
 
 	(window as any).view = view;

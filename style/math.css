@@ -63,9 +63,9 @@ math-inline .math-src .ProseMirror {
     border-left: 1px solid transparent;
 }
 
-math-inline .math-src::after, math-inline .math-src::before {
+math-inline .math-src > .ProseMirror::after, math-inline .math-src > .ProseMirror::before {
     content: "$";
-    color: #b0b0b0;
+    color: #88888855;
 }
 
 /* -- Block Math ---------------------------------------- */
@@ -79,7 +79,8 @@ math-display .math-render {
 }
 
 math-display.ProseMirror-selectednode {
-    background-color: #eee;
+    border: solid 1px #88888833;
+    border-radius: 0.4em;
 }
 
 math-display .math-src .ProseMirror {
@@ -116,11 +117,14 @@ math-inline.math-select .math-render {
 }
 
 .prosemirror-math-tooltip {
-    display: inline;
-    position: absolute;
+    display: inline-block;
     color: initial;
     padding: 0.2em 0.4em;
     border-radius: 0.5em;
     border: 1px solid #88888833;
     background: var(--surface, #ffffff);
+    margin: -0.4em 0.2em -0.4em -0.3em;
+    font-size: 0.82em;
 }
+
+@import "katex/dist/katex.min.css";
