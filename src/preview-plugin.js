@@ -34,8 +34,8 @@ export class PreviewTooltip {
         try {
             this.tooltip.style.display = ""
             let box = this.tooltip.offsetParent?.getBoundingClientRect?.() || {left: 0, top: 0}
-            this.tooltip.style.right = (box.left - equation.coordsAtPos(0).left) + "px"
-            this.tooltip.style.top = (box.top - equation.coordsAtPos(0).bottom + 2) + "px"
+            this.tooltip.style.left = (equation.coordsAtPos(0).left) + "px"
+            this.tooltip.style.top = (box.bottom - equation.coordsAtPos(0).bottom + 2) + "px"
         } catch (e) {
             return
         }
