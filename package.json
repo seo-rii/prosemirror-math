@@ -58,7 +58,8 @@
       "require": "./dist/tiptap.js",
       "types": "./dist/tiptap.d.ts"
     },
-    "./style.css": "./style/math.css"
+    "./style.css": "./style/index.css",
+    "./math.css": "./style/math.css"
   },
   "files": [
     "dist",

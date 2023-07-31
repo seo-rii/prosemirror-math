@@ -126,5 +126,3 @@ math-inline.math-select .math-render {
     margin: -0.4em 0.2em -0.4em -0.3em;
     font-size: 0.82em;
 }
-
-@import "katex/dist/katex.min.css";

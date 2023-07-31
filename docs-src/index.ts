@@ -46,7 +46,7 @@ import {inputRules} from "prosemirror-inputrules";
  */
 
 // library css
-import "@seorii/prosemirror-math/style.css";
+import "@seorii/prosemirror-math/math.css";
 import "prosemirror-view/style/prosemirror.css";
 import "katex/dist/katex.min.css";
 import "prosemirror-gapcursor/style/gapcursor.css";
