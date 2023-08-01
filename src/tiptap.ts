@@ -15,7 +15,7 @@ import {mathSelectPlugin} from "./plugins/math-select";
 import {keymap} from "prosemirror-keymap";
 import {chainCommands, deleteSelection, joinBackward, selectNodeBackward} from "prosemirror-commands";
 
-export const Katex = Node.create({
+export const MathInline = Node.create({
 	name: 'math_inline',
 	group: 'inline math',
 	content: 'text*',
@@ -38,6 +38,32 @@ export const Katex = Node.create({
 
 		return [mathPlugin, inputRulePlugin, mathSelectPlugin, keymap({
 			"Backspace": chainCommands(deleteSelection, mathBackspaceCmd, joinBackward, selectNodeBackward),
-		}),];
+		})];
+	},
+});
+
+export const MathBlock = Node.create({
+	name: 'math_display',
+	group: 'block math',
+	content: 'text*',
+	atom: true,
+	code: true,
+
+	parseHTML() {
+		return [{tag: 'math-display'}];
+	},
+
+	renderHTML({HTMLAttributes}) {
+		return ['math-display', mergeAttributes({class: 'math-node'}, HTMLAttributes), 0];
+	},
+
+	addProseMirrorPlugins() {
+		const inputRulePlugin = inputRules({
+			rules: [makeBlockMathInputRule(REGEX_BLOCK_MATH_DOLLARS, this.type)],
+		});
+
+		return [mathPlugin, inputRulePlugin, mathSelectPlugin, keymap({
+			"Backspace": chainCommands(deleteSelection, mathBackspaceCmd, joinBackward, selectNodeBackward),
+		})];
 	},
 });
