@@ -9,7 +9,7 @@ import {
 	REGEX_BLOCK_MATH_DOLLARS,
 	REGEX_INLINE_MATH_DOLLARS
 } from "./plugins/math-inputrules";
-import {mathPlugin} from "./math-plugin";
+import {mathInlinePlugin, mathDisplayPlugin} from "./math-plugin";
 import {mathBackspaceCmd} from "./plugins/math-backspace";
 import {mathSelectPlugin} from "./plugins/math-select";
 import {keymap} from "prosemirror-keymap";
@@ -36,7 +36,7 @@ export const MathInline = Node.create({
 			rules: [makeInlineMathInputRule(REGEX_INLINE_MATH_DOLLARS, this.type), makeBlockMathInputRule(REGEX_BLOCK_MATH_DOLLARS, this.type)],
 		});
 
-		return [mathPlugin, inputRulePlugin, mathSelectPlugin, keymap({
+		return [mathInlinePlugin, inputRulePlugin, mathSelectPlugin, keymap({
 			"Backspace": chainCommands(deleteSelection, mathBackspaceCmd, joinBackward, selectNodeBackward),
 		})];
 	},
@@ -62,8 +62,6 @@ export const MathBlock = Node.create({
 			rules: [makeBlockMathInputRule(REGEX_BLOCK_MATH_DOLLARS, this.type)],
 		});
 
-		return [mathPlugin, inputRulePlugin, mathSelectPlugin, keymap({
-			"Backspace": chainCommands(deleteSelection, mathBackspaceCmd, joinBackward, selectNodeBackward),
-		})];
+		return [mathDisplayPlugin, inputRulePlugin];
 	},
 });
