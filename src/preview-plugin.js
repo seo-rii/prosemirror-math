@@ -1,7 +1,7 @@
 // preview
 
 import {Plugin} from "prosemirror-state"
-import {render, KatexOptions} from "katex";
+import katex from "katex";
 
 //const PREVIEW_PLUGIN_KEY = new PluginKey<IMathPluginState>("prosemirror-math-preview");
 
@@ -41,7 +41,7 @@ export class PreviewTooltip {
         }
 
         try {
-            render(texString, this.tooltip, Object.assign({
+            katex.render(texString, this.tooltip, Object.assign({
                 globalGroup: true,
                 throwOnError: false
             }, {}));

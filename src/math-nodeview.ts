@@ -13,7 +13,7 @@ import {undo, redo} from "prosemirror-history";
 import {newlineInCode, chainCommands, deleteSelection} from "prosemirror-commands";
 
 // katex
-import {render, KatexOptions} from "katex";
+import katex from "katex";
 import {collapseMathCmd} from "./commands/collapse-math-cmd";
 import {IMathPluginState} from "./math-plugin";
 
@@ -35,7 +35,7 @@ interface IMathViewOptions {
 	/** Dom element name to use for this NodeView */
 	tagName?: string;
 	/** Whether to render this node as display or inline math. */
-	katexOptions?: KatexOptions;
+	katexOptions?: katex.KatexOptions;
 }
 
 export class MathView implements NodeView, ICursorPosObserver {
@@ -53,7 +53,7 @@ export class MathView implements NodeView, ICursorPosObserver {
 
 	// internal state
 	cursorSide: "start" | "end";
-	private _katexOptions: KatexOptions;
+	private _katexOptions: katex.KatexOptions;
 	private _tagName: string;
 	private _isEditing: boolean;
 	private _onDestroy: (() => void) | undefined;
@@ -245,7 +245,7 @@ export class MathView implements NodeView, ICursorPosObserver {
 
 		// render katex, but fail gracefully
 		try {
-			render(texString, this._mathRenderElt, this._katexOptions);
+			katex.render(texString, this._mathRenderElt, this._katexOptions);
 			this._mathRenderElt.classList.remove("parse-error");
 			this.dom.setAttribute("title", "");
 		} catch (err) {
