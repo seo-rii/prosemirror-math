@@ -4,8 +4,10 @@
  *--------------------------------------------------------*/
 
 // core functionality
-export { MathView, ICursorPosObserver } from "./math-nodeview";
-export { mathPlugin, createMathView, IMathPluginState } from "./math-plugin";
+export { MathView } from "./math-nodeview";
+export type { ICursorPosObserver } from "./math-nodeview";
+export { mathPlugin, createMathView } from "./math-plugin";
+export type { IMathPluginState } from "./math-plugin";
 export { mathSchemaSpec, createMathSchema } from "./math-schema";
 
 // recommended plugins

@@ -4,9 +4,9 @@
  *--------------------------------------------------------*/
 
 // prosemirror imports
-import {Node as ProseNode} from "prosemirror-model";
-import {EditorState, Transaction, TextSelection, PluginKey} from "prosemirror-state";
-import {NodeView, EditorView, Decoration} from "prosemirror-view";
+import type {Node as ProseNode} from "prosemirror-model";
+import {EditorState, TextSelection, type Transaction, type PluginKey} from "prosemirror-state";
+import {EditorView, type NodeView, type Decoration} from "prosemirror-view";
 import {StepMap} from "prosemirror-transform";
 import {keymap} from "prosemirror-keymap";
 import {undo, redo} from "prosemirror-history";
@@ -15,7 +15,7 @@ import {newlineInCode, chainCommands, deleteSelection} from "prosemirror-command
 // katex
 import katex from "katex";
 import {collapseMathCmd} from "./commands/collapse-math-cmd";
-import {IMathPluginState} from "./math-plugin";
+import type {IMathPluginState} from "./math-plugin";
 
 // preview
 

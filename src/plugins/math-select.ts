@@ -5,14 +5,14 @@
 
 // prosemirror imports
 import {
-    EditorState,
-    Transaction,
-    Selection as ProseSelection,
+    type EditorState,
+    type Transaction,
+    type Selection as ProseSelection,
     Plugin as ProsePlugin,
-    EditorStateConfig
+    type EditorStateConfig
 } from "prosemirror-state";
 import {DecorationSet, Decoration} from "prosemirror-view";
-import {Fragment, Node as ProseNode} from "prosemirror-model";
+import type {Fragment, Node as ProseNode} from "prosemirror-model";
 
 ////////////////////////////////////////////////////////////
 

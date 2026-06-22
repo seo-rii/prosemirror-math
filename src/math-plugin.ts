@@ -4,10 +4,10 @@
  *--------------------------------------------------------*/
 
 // prosemirror imports
-import {Schema, Node as ProseNode} from "prosemirror-model";
-import {Plugin as ProsePlugin, PluginKey, PluginSpec} from "prosemirror-state";
+import type {Node as ProseNode} from "prosemirror-model";
+import {Plugin as ProsePlugin, PluginKey, type PluginSpec} from "prosemirror-state";
 import {MathView} from "./math-nodeview";
-import {EditorView} from "prosemirror-view";
+import type {EditorView} from "prosemirror-view";
 
 ////////////////////////////////////////////////////////////
 

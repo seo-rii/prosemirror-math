@@ -9,7 +9,7 @@
  * the default set of note attributes should be used.
  */
 
-import {Node as ProseNode, Fragment, ParseRule, Schema} from "prosemirror-model";
+import {Fragment, type Node as ProseNode, type ParseRule, type Schema} from "prosemirror-model";
 
 ////////////////////////////////////////////////////////////
 

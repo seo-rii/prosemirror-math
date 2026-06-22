@@ -1,6 +1,6 @@
-import {Node as ProseNode, Mark, Slice, Schema, NodeType, MarkType, Fragment} from "prosemirror-model";
-import {createMathSchema} from "src/math-schema";
-import {SchemaMarkT, SchemaNodeT} from "./types";
+import type {Node as ProseNode, Mark, Slice, Schema, NodeType, MarkType, Fragment} from "prosemirror-model";
+import type {createMathSchema} from "src/math-schema";
+import type {SchemaMarkT, SchemaNodeT} from "./types";
 
 ////////////////////////////////////////////////////////////////////////////////
 

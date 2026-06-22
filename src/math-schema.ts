@@ -4,9 +4,9 @@
  *--------------------------------------------------------*/
 
 // prosemirror imports
-import { Node as ProseNode, Fragment, MarkSpec, NodeSpec, Schema, SchemaSpec, NodeType } from "prosemirror-model";
+import {Schema, type MarkSpec, type NodeSpec, type SchemaSpec} from "prosemirror-model";
 import { defaultBlockMathParseRules, defaultInlineMathParseRules } from "./plugins/math-paste-rules";
-import { SchemaSpecMarkT, SchemaSpecNodeT } from "./utils/types";
+import type { SchemaSpecMarkT, SchemaSpecNodeT } from "./utils/types";
 
 ////////////////////////////////////////////////////////////
 

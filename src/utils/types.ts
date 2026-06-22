@@ -1,4 +1,4 @@
-import { Schema, SchemaSpec } from "prosemirror-model";
+import type { Schema, SchemaSpec } from "prosemirror-model";
 
 ////////////////////////////////////////////////////////////////////////////////
 
