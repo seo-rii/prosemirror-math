@@ -2,16 +2,21 @@
   "name": "@seorii/prosemirror-math",
   "version": "0.5.0",
   "description": "Schema and plugins for first-class math support in ProseMirror.",
-  "repository": "github:benrbray/prosemirror-math",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/seo-rii/prosemirror-math.git"
+  },
   "private": false,
   "scripts": {
-    "build:dist": "rollup -c",
-    "build:docs": "cd docs-src && npm run build",
-    "build": "npm run build:dist; npm run build:docs",
-    "clean": "npx del dist; npx del docs",
+    "build:check": "tsc --project tsconfig.build.json --noEmit",
+    "build:dist": "npm run build:check && vite --config vite.config.lib.ts build",
+    "build:docs": "npm run build:dist && cd docs-src && npm run build",
+    "build": "npm run build:dist",
+    "build:all": "npm run build:docs",
+    "clean": "npx del dist && npx del docs",
     "serve:docs": "cd docs-src && npm run serve",
-    "prepare": "npm run clean; npm run build",
-    "deploy": "npm run build:dist && npm publish --access public"
+    "prepack": "npm run clean && npm run build:dist",
+    "deploy": "npm run prepack && npm publish --access public --ignore-scripts"
   },
   "keywords": [
     "prosemirror",
@@ -39,27 +44,26 @@
       "optional": true
     }
   },
+  "dependencies": {
+    "@types/katex": "^0.16.2"
+  },
   "devDependencies": {
     "@tiptap/core": "^2.0.4",
-    "@types/katex": "^0.16.2",
     "del-cli": "^5.0.0",
-    "html-webpack-plugin": "^5.5.3",
-    "rollup": "^3.27.0",
-    "rollup-plugin-ts": "^3.2.0",
-    "typescript": "^5.1.6",
-    "webpack": "^5.88.2",
-    "webpack-cli": "^5.1.4"
+    "typescript": "5.4.2",
+    "vite": "^5.2.0",
+    "vite-plugin-dts": "^3.8.1"
   },
   "type": "module",
   "exports": {
     ".": {
       "import": "./dist/index.es.js",
-      "require": "./dist/index.js",
+      "require": "./dist/index.cjs",
       "types": "./dist/index.d.ts"
     },
     "./tiptap": {
       "import": "./dist/tiptap.es.js",
-      "require": "./dist/tiptap.js",
+      "require": "./dist/tiptap.cjs",
       "types": "./dist/tiptap.d.ts"
     },
     "./style.css": "./style/index.css",
@@ -68,5 +72,6 @@
   "files": [
     "dist",
     "style"
-  ]
+  ],
+  "packageManager": "pnpm@10.30.0"
 }

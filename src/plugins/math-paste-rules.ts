@@ -9,7 +9,7 @@
  * the default set of note attributes should be used.
  */
 
-import {Fragment, type Node as ProseNode, type ParseRule, type Schema} from "prosemirror-model";
+import {Fragment, type Node as ProseNode, type Schema, type TagParseRule} from "prosemirror-model";
 
 ////////////////////////////////////////////////////////////
 
@@ -101,7 +101,7 @@ function matchWikipedia(root: Element): false | string {
  * </span></dd></dl>
  * ```
  */
-export const wikipediaBlockMathParseRule: ParseRule = {
+export const wikipediaBlockMathParseRule: TagParseRule = {
     tag: "dl",
     getAttrs(p: Node | string): false | null {
         let dl = p as HTMLDListElement;
@@ -155,7 +155,7 @@ export const wikipediaBlockMathParseRule: ParseRule = {
  * </span>
  * ```
  */
-export const wikipediaInlineMathParseRule: ParseRule = {
+export const wikipediaInlineMathParseRule: TagParseRule = {
     tag: "span",
     getAttrs(p: Node | string): false | null {
         let span = p as HTMLSpanElement;
@@ -178,10 +178,10 @@ export const wikipediaInlineMathParseRule: ParseRule = {
 
 ////////////////////////////////////////////////////////////
 
-export const defaultInlineMathParseRules: ParseRule[] = [
+export const defaultInlineMathParseRules: TagParseRule[] = [
     wikipediaInlineMathParseRule,
 ]
 
-export const defaultBlockMathParseRules: ParseRule[] = [
+export const defaultBlockMathParseRules: TagParseRule[] = [
     wikipediaBlockMathParseRule,
 ]

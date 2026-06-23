@@ -196,7 +196,8 @@ npm install
 
 From the root directory, you can run the scripts in `package.json`.
 
-* Use `npm run build:dist` to build the `prosemirror-math` package with rollup.
-* Use `npm run build:docs` to build the example code with webpack and generate the static site inside the `docs/` folder.  
-* Use `npm run build` to build the package and website simultaneously.
+* Use `npm run build:dist` to build the `prosemirror-math` package with Vite.
+* Use `npm run build:docs` to build the package and example code with webpack and generate the static site inside the `docs/` folder.
+* Use `npm run build` to build the package.
+* Use `npm run build:all` to build the package and website.
 * Use `npm run serve:docs` to start a local development server at `localhost:8080` that will watch for changes in the `/docs-src` folder (but not in `/src`).

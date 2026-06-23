@@ -1,5 +1,7 @@
 # remember to keep this in sync with .npmignore!
 node_modules
+dist
+docs
 .cache
 .vscode
 */**/node_modules
